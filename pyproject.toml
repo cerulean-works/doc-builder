@@ -1,7 +1,7 @@
 [project]
 # The name below is what `is_doc_builder_repo` looks for to detect this repo, do not rename it.
 name = "cerulean-doc-builder"
-version = "0.6.0.dev0"
+version = "0.1.0"
 description = "Builds static documentation sites from Markdown docs and Python docstrings"
 readme = "README.md"
 requires-python = ">=3.10"
