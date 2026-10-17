@@ -1,0 +1,37 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Serves the static doc-builder sites stored in R2 (docs/source/architecture.md, C1-C3).
+  // Always deploy with an explicit environment:
+  //   pnpm run deploy:production   ->  cerulean-docs          (docs.cerulean.works)
+  //   pnpm run deploy:preview      ->  cerulean-docs-preview  (docs-preview.cerulean.works)
+  "name": "cerulean-docs",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+  // Once the custom domains below are live, set "workers_dev": false.
+
+  // Top-level bindings are only used by a bare `wrangler dev` (no --env); they
+  // mirror production. Bindings and vars are not inherited by environments.
+  "vars": { "PREVIEW": "false", "SITE_NAME": "Cerulean Docs" },
+  "r2_buckets": [{ "binding": "DOCS", "bucket_name": "cerulean-docs" }],
+
+  "env": {
+    "production": {
+      "name": "cerulean-docs",
+      "vars": { "PREVIEW": "false", "SITE_NAME": "Cerulean Docs" },
+      "r2_buckets": [{ "binding": "DOCS", "bucket_name": "cerulean-docs" }],
+      "routes": [{ "pattern": "docs.cerulean.works", "custom_domain": true }],
+    },
+    "preview": {
+      "name": "cerulean-docs-preview",
+      "vars": { "PREVIEW": "true", "SITE_NAME": "Cerulean Docs Preview" },
+      "r2_buckets": [
+        { "binding": "DOCS", "bucket_name": "cerulean-docs-preview" },
+      ],
+      // PR builds run untrusted JavaScript, so keep previews on their own origin (C1).
+      "routes": [
+        { "pattern": "docs-preview.cerulean.works", "custom_domain": true },
+      ],
+    },
+  },
+}

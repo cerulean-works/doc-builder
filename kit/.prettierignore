@@ -1,0 +1,18 @@
+.DS_Store
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+
+# Staged doc pages and generated data (see .gitignore)
+/src/routes/guide
+/src/routes/reference
+/src/lib/generated
+/static
+
+# Ignore files for PNPM, NPM and YARN
+pnpm-lock.yaml
+yarn.lock

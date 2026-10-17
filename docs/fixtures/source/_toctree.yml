@@ -1,0 +1,12 @@
+guide:
+  - title: Get started
+    sections:
+      - local: index
+        title: Introduction
+      - local: quickstart
+        title: Quickstart
+reference:
+  - title: API
+    sections:
+      - local: api/utils
+        title: Utilities

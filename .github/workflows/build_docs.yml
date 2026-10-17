@@ -1,0 +1,216 @@
+name: Build docs
+
+# Reusable: builds one (project, version) static site with `doc-builder build --html`
+# and uploads it as the `docs-build` artifact. Holds no secrets, so it is safe to
+# run on untrusted pull_request code. Publishing is a separate workflow
+# (publish_docs.yml). See docs/source/publishing.md.
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
+        description: "Project name; becomes the first URL segment (/<project>/<version>/)."
+      version:
+        type: string
+        default: ""
+        description: "Version to build. Default: pr_<number> on pull_request, the tag on tag pushes, else main."
+      path_to_docs:
+        type: string
+        default: ""
+        description: "Docs folder relative to the workspace. Default: <repo name>/docs/source."
+      package_path:
+        type: string
+        default: ""
+        description: "Package to pip-install, relative to the workspace, extras allowed (e.g. flock[docs]). Default: <repo name>."
+      python_version:
+        type: string
+        default: "3.12"
+      not_python_module:
+        type: boolean
+        default: false
+        description: "Docs only: skip installing the package and autodoc."
+      mock_deps:
+        type: string
+        default: ""
+        description: "Comma-separated modules to mock during autodoc (doc-builder --mock_deps)."
+      pre_command:
+        type: string
+        default: ""
+        description: "Shell command run in the build venv before building."
+      repo:
+        type: string
+        default: ""
+        description: "owner/name of the repo to build. Default: the calling repository."
+      site_url:
+        type: string
+        default: "https://docs.cerulean.works"
+        description: "Absolute origin for llms.txt on non-PR builds."
+      preview_site_url:
+        type: string
+        default: "https://docs-preview.cerulean.works"
+        description: "Absolute origin for llms.txt on PR builds."
+
+permissions: {}
+
+jobs:
+  build:
+    permissions:
+      contents: read
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    env:
+      UV_HTTP_TIMEOUT: 900 # max 15min to install deps (shouldn't take more than 5min)
+
+    steps:
+      - name: Resolve build parameters
+        id: ctx
+        env:
+          PROJECT: ${{ inputs.project }}
+          INPUT_VERSION: ${{ inputs.version }}
+          INPUT_REPO: ${{ inputs.repo }}
+          INPUT_DOCS: ${{ inputs.path_to_docs }}
+          INPUT_PACKAGE: ${{ inputs.package_path }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          SITE_URL: ${{ inputs.site_url }}
+          PREVIEW_SITE_URL: ${{ inputs.preview_site_url }}
+        run: |
+          set -euo pipefail
+          is_pr=false
+          if [[ "$EVENT_NAME" == pull_request || "$EVENT_NAME" == pull_request_target ]]; then
+            is_pr=true
+          fi
+
+          if [ -n "$INPUT_VERSION" ]; then
+            version="$INPUT_VERSION"
+          elif $is_pr; then
+            version="pr_$PR_NUMBER"
+          elif [ "$REF_TYPE" == tag ]; then
+            version="$REF_NAME"
+          else
+            version=main
+          fi
+
+          if $is_pr; then sha="$PR_HEAD_SHA"; site="$PREVIEW_SITE_URL"; else sha="$GITHUB_SHA"; site="$SITE_URL"; fi
+          repo="${INPUT_REPO:-$GITHUB_REPOSITORY}"
+          dir="${repo#*/}"
+
+          [[ "$PROJECT" =~ ^[A-Za-z0-9][A-Za-z0-9_-]*$ ]] || { echo "::error::invalid project '$PROJECT'"; exit 1; }
+          [[ "$version" =~ ^[A-Za-z0-9][A-Za-z0-9_.+-]*$ && "$version" != latest ]] || { echo "::error::invalid version '$version'"; exit 1; }
+          [[ "$repo" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] || { echo "::error::invalid repo '$repo'"; exit 1; }
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::could not determine the commit to build"; exit 1; }
+
+          {
+            echo "version=$version"
+            echo "sha=$sha"
+            echo "repo=$repo"
+            echo "dir=$dir"
+            echo "docs=${INPUT_DOCS:-$dir/docs/source}"
+            echo "package=${INPUT_PACKAGE:-$dir}"
+            echo "site_url=$site"
+            echo "is_pr=$is_pr"
+          } >> "$GITHUB_OUTPUT"
+          echo "Building $PROJECT@$version from $repo@$sha"
+
+      # Check out this reusable workflow's own revision, so that the doc-builder
+      # code installed below is exactly the revision the caller pinned in `uses:`.
+      # Without an explicit `ref`, actions/checkout falls back to the default
+      # branch of the target repository: the caller's pin would then only apply to
+      # this YAML file, never to the code that runs the build. The path can't be
+      # `doc-builder`: that is where doc-builder's own docs build checks itself out.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          repository: ${{ job.workflow_repository }}
+          ref: ${{ job.workflow_sha }}
+          path: _doc-builder
+          persist-credentials: false
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          repository: ${{ steps.ctx.outputs.repo }}
+          ref: ${{ steps.ctx.outputs.sha }}
+          path: ${{ steps.ctx.outputs.dir }}
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413  # v6.1.0
+        with:
+          package_json_file: _doc-builder/kit/package.json
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020  # v7.0.0
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: _doc-builder/kit/pnpm-lock.yaml
+
+      - uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4  # v10.1.0
+        with:
+          version: "0.13.1"
+
+      - name: Install doc-builder and the package
+        env:
+          PYTHON_VERSION: ${{ inputs.python_version }}
+          NOT_PYTHON_MODULE: ${{ inputs.not_python_module }}
+          PACKAGE: ${{ steps.ctx.outputs.package }}
+        run: |
+          set -euo pipefail
+          uv venv --python "$PYTHON_VERSION"
+          source .venv/bin/activate
+          # Editable, so the build uses the kit of this same checkout instead of
+          # cloning doc-builder's default branch to find one.
+          uv pip install -e ./_doc-builder
+          if [ "$NOT_PYTHON_MODULE" == true ]; then
+            echo "Not a Python module; skipping package install."
+          else
+            uv pip install "./$PACKAGE"
+          fi
+
+      - name: Run pre-command
+        if: inputs.pre_command != ''
+        env:
+          PRE_COMMAND: ${{ inputs.pre_command }}
+        run: |
+          source .venv/bin/activate
+          bash -c "$PRE_COMMAND"
+
+      - name: Build
+        env:
+          NODE_OPTIONS: --max-old-space-size=6656
+          PROJECT: ${{ inputs.project }}
+          VERSION: ${{ steps.ctx.outputs.version }}
+          DOCS: ${{ steps.ctx.outputs.docs }}
+          REPO: ${{ steps.ctx.outputs.repo }}
+          SHA: ${{ steps.ctx.outputs.sha }}
+          SITE_URL: ${{ steps.ctx.outputs.site_url }}
+          NOT_PYTHON_MODULE: ${{ inputs.not_python_module }}
+          MOCK_DEPS: ${{ inputs.mock_deps }}
+        run: |
+          set -euo pipefail
+          source .venv/bin/activate
+          args=(--version "$VERSION" --build_dir build_dir --html --repo "$REPO" --source_ref "$SHA" --site_url "$SITE_URL")
+          if [ "$NOT_PYTHON_MODULE" == true ]; then args+=(--not_python_module); fi
+          if [ -n "$MOCK_DEPS" ]; then args+=(--mock_deps "$MOCK_DEPS"); fi
+          doc-builder build "$PROJECT" "$DOCS" "${args[@]}"
+          test -f "build_dir/$PROJECT/$VERSION/404.html" || { echo "::error::build_dir/$PROJECT/$VERSION is incomplete"; exit 1; }
+
+      - name: Record PR number and commit
+        if: steps.ctx.outputs.is_pr == 'true'
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          SHA: ${{ steps.ctx.outputs.sha }}
+        run: |
+          echo "$PR_NUMBER" > build_dir/pr_number
+          echo "$SHA" > build_dir/commit_sha
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7.0.1
+        with:
+          name: docs-build
+          path: build_dir/
+          if-no-files-found: error
+          retention-days: 7

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" class="dark-theme">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="color-scheme" content="dark light" />
+		<link rel="icon" type="image/png" href="%sveltekit.assets%/favicon.png" />
+		<script>
+			// Restore the theme before first paint. Evening (dark) is the default, including when
+			// storage is unavailable; only an explicit "light" preference switches to Daylight.
+			try {
+				if (localStorage.getItem("cerulean-theme") === "light") {
+					document.documentElement.classList.remove("dark-theme");
+				}
+			} catch {
+				// The theme toggle still works without storage.
+			}
+		</script>
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>

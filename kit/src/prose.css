@@ -1,0 +1,726 @@
+/*
+  Doc content. Generated pages carry no classes of their own (docs/source/architecture.md, C5), so
+  everything inside `.doc-content` is styled here: Newsreader prose at a docs density,
+  DM Sans for tables and labels, system monospace for code.
+*/
+
+.doc-content {
+	font: 400 18px/1.6 var(--font-editorial);
+	color: var(--c-ink);
+	overflow-wrap: break-word;
+}
+
+/* ---------------------------------------------------------------- headings */
+
+.doc-content h1,
+.doc-content h2,
+.doc-content h3,
+.doc-content h4,
+.doc-content h5,
+.doc-content h6 {
+	position: relative;
+	font-family: var(--font-editorial);
+	font-weight: 400;
+	color: var(--c-ink);
+}
+
+.doc-content h1 {
+	margin: 0 0 24px;
+	font-size: 42px;
+	line-height: 1.12;
+	letter-spacing: -0.02em;
+}
+
+.doc-content h2 {
+	margin: 56px 0 16px;
+	font-size: 30px;
+	line-height: 1.18;
+	letter-spacing: -0.015em;
+}
+
+.doc-content h3 {
+	margin: 40px 0 12px;
+	font-size: 23px;
+	line-height: 1.25;
+	letter-spacing: -0.01em;
+}
+
+.doc-content h4 {
+	margin: 32px 0 8px;
+	font-size: 19px;
+	line-height: 1.3;
+	font-weight: 500;
+}
+
+.doc-content h5,
+.doc-content h6 {
+	margin: 24px 0 8px;
+	font-size: 17px;
+	line-height: 1.35;
+	font-weight: 500;
+}
+
+/* Heading anchor: a quiet link icon after the heading text, revealed on hover / focus */
+.header-link {
+	display: inline-flex;
+	align-items: center;
+	margin-left: 8px;
+	vertical-align: middle;
+	color: var(--c-muted);
+	opacity: 0;
+	transition: opacity 120ms;
+}
+
+.header-link svg {
+	width: 0.55em;
+	height: 0.55em;
+	min-width: 14px;
+	min-height: 14px;
+}
+
+.doc-heading:hover .header-link,
+.example-code-block:hover > .header-link,
+.docstring-header:hover .header-link,
+.docstring-param-list li:hover > .header-link,
+.header-link:focus-visible {
+	opacity: 1;
+}
+
+@media (hover: none) {
+	.header-link {
+		display: none;
+	}
+}
+
+/* ---------------------------------------------------------------- text */
+
+.doc-content p,
+.doc-content ul,
+.doc-content ol,
+.doc-content dl,
+.doc-content figure,
+.doc-content table,
+.doc-content blockquote,
+.doc-content .code-block,
+.doc-content .doc-tabs,
+.doc-content .video-embed {
+	margin: 0 0 20px;
+}
+
+.doc-content a {
+	color: var(--c-link);
+	text-decoration: underline;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.18em;
+}
+
+.doc-content a:hover {
+	text-decoration-thickness: 2px;
+}
+
+.doc-content .header-link,
+.doc-content .docstring-source,
+.doc-content a.header-link:hover {
+	text-decoration: none;
+}
+
+/* page actions (Copy page menu) live in the title row but are chrome, not prose */
+.doc-content .doc-title-actions a {
+	color: var(--c-ink);
+	text-decoration: none;
+}
+
+.doc-content strong,
+.doc-content b {
+	font-weight: 600;
+}
+
+.doc-content em {
+	font-style: italic;
+}
+
+.doc-content hr {
+	margin: 40px 0;
+	border: 0;
+	border-top: 1px solid var(--c-rule);
+}
+
+.doc-content ul,
+.doc-content ol {
+	padding-left: 1.4em;
+}
+
+.doc-content ul {
+	list-style: disc;
+}
+
+.doc-content ol {
+	list-style: decimal;
+}
+
+.doc-content li {
+	margin: 6px 0;
+	padding-left: 0.2em;
+}
+
+.doc-content li::marker {
+	color: var(--c-muted);
+}
+
+.doc-content li > ul,
+.doc-content li > ol,
+.doc-content li > p {
+	margin: 6px 0;
+}
+
+.doc-content dt {
+	font-weight: 600;
+}
+
+.doc-content dd {
+	margin: 0 0 12px 1.4em;
+}
+
+.doc-content img,
+.doc-content video {
+	max-width: 100%;
+	height: auto;
+}
+
+.doc-content figcaption {
+	margin-top: 8px;
+	color: var(--c-muted);
+	font: 400 14px/1.5 var(--font-ui);
+}
+
+.doc-content kbd {
+	font-size: 13px;
+}
+
+.doc-content sup,
+.doc-content sub {
+	line-height: 0;
+}
+
+/* ---------------------------------------------------------------- code */
+
+.doc-content code,
+.doc-content kbd,
+.doc-content samp,
+.doc-content pre {
+	font-family: var(--font-mono);
+}
+
+/* inline code */
+.doc-content :not(pre) > code {
+	padding: 0.1em 0.35em;
+	background: var(--c-surface);
+	border: 1px solid color-mix(in srgb, var(--c-rule) 70%, transparent);
+	font-size: 0.8em;
+	overflow-wrap: anywhere;
+}
+
+.doc-content a > code {
+	color: inherit;
+}
+
+.code-block {
+	position: relative;
+}
+
+.code-block pre,
+.doc-content pre {
+	margin: 0;
+	padding: 14px 18px;
+	overflow-x: auto;
+	background: var(--c-surface);
+	border: 1px solid var(--c-rule);
+	font-size: 14px;
+	line-height: 1.6;
+	tab-size: 4;
+}
+
+.doc-content pre code {
+	padding: 0;
+	border: 0;
+	background: none;
+	font-size: inherit;
+}
+
+.code-block pre.wrap {
+	white-space: pre-wrap;
+}
+
+.code-block-copy {
+	position: absolute;
+	top: 6px;
+	right: 6px;
+	opacity: 0;
+	transition: opacity 120ms;
+}
+
+.code-block:hover .code-block-copy,
+.code-block-copy:focus-within {
+	opacity: 1;
+}
+
+@media (hover: none) {
+	.code-block-copy {
+		opacity: 1;
+	}
+}
+
+.copy-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	height: 28px;
+	min-width: 28px;
+	padding: 0 7px;
+	border: 1px solid var(--c-rule);
+	background: var(--c-paper);
+	color: var(--c-muted);
+	font: 400 12px/1 var(--font-ui);
+}
+
+.copy-button:hover,
+.copy-button.is-copied {
+	color: var(--c-ink);
+}
+
+.copy-button svg {
+	width: 13px;
+	height: 13px;
+}
+
+.copy-button span:empty {
+	display: none;
+}
+
+.example-code-block {
+	position: relative;
+}
+
+.example-code-block > .header-link {
+	position: absolute;
+	top: 8px;
+	left: -28px;
+	margin: 0;
+}
+
+.example-code-block.is-target pre,
+.is-target > .docstring-header {
+	outline: 2px solid var(--c-link);
+	outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------- tables */
+
+.doc-content table {
+	display: block;
+	max-width: 100%;
+	overflow-x: auto;
+	border-collapse: collapse;
+	font: 400 15px/1.5 var(--font-ui);
+}
+
+.doc-content table.full-width {
+	display: table;
+	width: 100%;
+}
+
+.doc-content th,
+.doc-content td {
+	padding: 8px 14px 8px 0;
+	border-bottom: 1px solid var(--c-rule);
+	text-align: left;
+	vertical-align: top;
+}
+
+.doc-content th + th,
+.doc-content td + td {
+	padding-left: 14px;
+}
+
+.doc-content th {
+	font-weight: 500;
+	border-bottom-color: var(--c-muted);
+}
+
+.doc-content table img {
+	margin: 0;
+}
+
+/* ---------------------------------------------------------------- callouts */
+
+/* plain quotation */
+.doc-content blockquote {
+	padding: 2px 0 2px 20px;
+	border-left: 2px solid var(--c-rule);
+	color: var(--c-muted);
+	font-style: italic;
+}
+
+/* `> [!NOTE]` etc. (mdsvex adds the marker as a class) and the Tip / Added / Changed /
+   Deprecated components */
+.doc-content blockquote.note,
+.doc-content blockquote.tip,
+.doc-content blockquote.important,
+.doc-content blockquote.warning,
+.doc-content blockquote.caution {
+	--callout-accent: var(--c-link);
+	padding: 14px 18px;
+	border: 1px solid var(--c-rule);
+	border-left: 3px solid var(--callout-accent);
+	background: color-mix(in srgb, var(--callout-accent) 5%, var(--c-paper));
+	color: var(--c-ink);
+	font-style: normal;
+	font-size: 17px;
+}
+
+.doc-content blockquote.warning {
+	--callout-accent: var(--c-warning);
+}
+
+.doc-content blockquote.caution {
+	--callout-accent: var(--c-caution);
+}
+
+.doc-content blockquote.note:not(.version-note)::before,
+.doc-content blockquote.tip::before,
+.doc-content blockquote.important::before,
+.doc-content blockquote.warning:not(.version-note)::before,
+.doc-content blockquote.caution::before,
+.doc-content .callout-title {
+	display: block;
+	margin: 0 0 4px;
+	color: var(--callout-accent);
+	font: 500 14px/1.5 var(--font-ui);
+}
+
+.doc-content blockquote.note:not(.version-note)::before {
+	content: "Note";
+}
+
+.doc-content blockquote.tip::before {
+	content: "Tip";
+}
+
+.doc-content blockquote.important::before {
+	content: "Important";
+}
+
+.doc-content blockquote.warning:not(.version-note)::before {
+	content: "Warning";
+}
+
+.doc-content blockquote.caution::before {
+	content: "Caution";
+}
+
+.doc-content blockquote > :last-child {
+	margin-bottom: 0;
+}
+
+.doc-content blockquote > p:first-of-type {
+	margin-top: 0;
+}
+
+.doc-content blockquote .code-block {
+	margin: 10px 0;
+}
+
+/* ---------------------------------------------------------------- tabs */
+
+.doc-tabs-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	margin-bottom: 14px;
+	border-bottom: 1px solid var(--c-rule);
+	font: 400 15px/1 var(--font-ui);
+}
+
+.doc-tab {
+	margin-bottom: -1px;
+	padding: 8px 0 10px;
+	border: 0;
+	border-bottom: 2px solid transparent;
+	background: transparent;
+	color: var(--c-muted);
+	font: inherit;
+}
+
+.doc-tab:hover {
+	color: var(--c-ink);
+}
+
+.doc-tab[aria-selected="true"] {
+	color: var(--c-ink);
+	border-bottom-color: var(--c-link);
+}
+
+/* ---------------------------------------------------------------- media */
+
+.video-embed {
+	position: relative;
+	aspect-ratio: 16 / 9;
+	max-width: 100%;
+}
+
+.video-embed iframe {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
+.mermaid-chart {
+	margin: 0 0 20px;
+	overflow-x: auto;
+	text-align: center;
+}
+
+.mermaid-chart svg {
+	max-width: 100%;
+	height: auto;
+}
+
+.mermaid-error {
+	padding: 12px 16px;
+	border: 1px solid var(--c-rule);
+	border-left: 3px solid var(--c-caution);
+	font: 400 14px/1.5 var(--font-ui);
+	text-align: left;
+}
+
+.mermaid-error code {
+	display: block;
+	margin-top: 4px;
+	white-space: pre-wrap;
+}
+
+.doc-content .katex-display {
+	overflow-x: auto;
+	overflow-y: hidden;
+	padding: 4px 0;
+}
+
+/* ---------------------------------------------------------------- autodoc */
+
+/* `<div class="docstring">` wraps every autodoc object (C5) */
+.doc-content .docstring {
+	margin: 28px 0 40px;
+	padding-left: 20px;
+	border-left: 1px solid var(--c-rule);
+}
+
+.doc-content .docstring .docstring {
+	margin: 24px 0;
+}
+
+.docstring-header {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 4px 8px;
+	padding: 8px 12px;
+	background: var(--c-surface);
+	border: 1px solid var(--c-rule);
+}
+
+.docstring-signature {
+	min-width: 0;
+	font: 400 15px/1.5 var(--font-mono);
+	overflow-wrap: anywhere;
+}
+
+.doc-content .docstring-signature {
+	padding: 0;
+	border: 0;
+	background: none;
+	font-size: 15px;
+}
+
+.docstring-kind {
+	color: var(--hl-keyword);
+}
+
+.docstring-prefix {
+	color: var(--c-muted);
+}
+
+.docstring-name {
+	color: var(--c-ink);
+	font-weight: 600;
+}
+
+.docstring-header .header-link {
+	margin-left: 0;
+}
+
+.doc-content a.docstring-source {
+	margin-left: auto;
+	color: var(--c-muted);
+	font: 400 13px/1 var(--font-ui);
+}
+
+.doc-content a.docstring-source:hover {
+	color: var(--c-ink);
+	text-decoration: underline;
+}
+
+.docstring-params {
+	margin: 10px 0 18px !important;
+	font: 400 14px/1.7 var(--font-mono);
+	color: var(--c-muted);
+}
+
+.docstring-param {
+	color: var(--c-ink);
+}
+
+.docstring-param-val {
+	color: var(--c-muted);
+}
+
+.comma:not(:empty) ~ .comma:not(:empty)::before {
+	content: ", ";
+}
+
+.has-description {
+	cursor: pointer;
+}
+
+.has-description .docstring-param,
+span.docstring-return-type.has-description {
+	text-decoration: underline dotted var(--c-muted);
+	text-underline-offset: 0.25em;
+}
+
+.docstring-arrow {
+	margin: 0 4px;
+}
+
+.docstring-details {
+	font-size: 17px;
+}
+
+.docstring-details.collapsed {
+	max-height: 24rem;
+	overflow: hidden;
+	mask-image: linear-gradient(to bottom, black 70%, transparent);
+}
+
+.docstring-expand {
+	margin: 8px 0 16px;
+}
+
+.docstring-section-title {
+	display: flex;
+	align-items: baseline;
+	gap: 10px;
+	margin: 16px 0 8px !important;
+	color: var(--c-ink);
+	font: 500 14px/1.5 var(--font-ui);
+}
+
+.docstring-section-title::after {
+	content: "";
+	flex: 1;
+	border-top: 1px solid var(--c-rule);
+	align-self: center;
+}
+
+.docstring-type {
+	font: 400 14px/1.5 var(--font-mono);
+	color: var(--c-muted);
+}
+
+.docstring-type p {
+	margin: 0;
+}
+
+.doc-content ul.docstring-param-list {
+	margin: 0 0 12px;
+	padding: 0;
+	list-style: none;
+}
+
+.docstring-param-list li {
+	position: relative;
+	margin: 0;
+	padding: 6px 0 6px 0;
+}
+
+.docstring-param-list li > .header-link {
+	position: absolute;
+	left: -22px;
+	top: 10px;
+	margin: 0;
+}
+
+.docstring-param-list li.is-target {
+	background: color-mix(in srgb, var(--c-selection) 45%, transparent);
+}
+
+.docstring-param-list li strong {
+	font-family: var(--font-mono);
+	font-size: 15px;
+	font-weight: 600;
+}
+
+.docstring-param-list p {
+	margin: 6px 0 0;
+}
+
+.docstring-description > :last-child {
+	margin-bottom: 0;
+}
+
+.docstring-tooltip {
+	position: absolute;
+	z-index: 70;
+	max-width: 22rem;
+	padding: 8px 12px;
+	background: var(--c-paper);
+	border: 1px solid var(--c-muted);
+	color: var(--c-ink);
+	font: 400 14px/1.5 var(--font-ui);
+	overflow-wrap: break-word;
+}
+
+.docstring-tooltip.wide {
+	max-width: 32rem;
+}
+
+.docstring-tooltip p {
+	margin: 0;
+}
+
+.docstring-tooltip code {
+	font-size: 13px;
+}
+
+@media (max-width: 899px) {
+	.doc-content {
+		font-size: 17px;
+	}
+
+	.doc-content h1 {
+		font-size: 34px;
+	}
+
+	.doc-content h2 {
+		font-size: 26px;
+	}
+
+	.doc-content h3 {
+		font-size: 21px;
+	}
+
+	.doc-content .docstring {
+		padding-left: 12px;
+	}
+}

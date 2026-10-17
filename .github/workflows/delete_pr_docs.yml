@@ -1,0 +1,79 @@
+name: Delete PR docs
+
+# Reusable: removes a PR's preview from the cerulean-docs-preview bucket when
+# the PR closes. Call it from a `pull_request_target: types: [closed]`
+# workflow. It never checks out code, so running with secrets on
+# pull_request_target is safe.
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        required: true
+        type: string
+      pr_number:
+        required: true
+        type: string
+    secrets:
+      r2_access_key_id:
+        required: true
+      r2_secret_access_key:
+        required: true
+      cloudflare_account_id:
+        required: true
+
+permissions: {}
+
+jobs:
+  delete:
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    # Same group as the preview upload in publish_docs.yml, so a delete never
+    # interleaves with an upload of the same PR.
+    concurrency:
+      group: docs-${{ inputs.project }}-pr_${{ inputs.pr_number }}
+      cancel-in-progress: false
+    defaults:
+      run:
+        shell: bash
+    env:
+      BUCKET: cerulean-docs-preview
+      PROJECT: ${{ inputs.project }}
+      PR_NUMBER: ${{ inputs.pr_number }}
+      AWS_REQUEST_CHECKSUM_CALCULATION: WHEN_REQUIRED
+      AWS_RESPONSE_CHECKSUM_VALIDATION: WHEN_REQUIRED
+      AWS_EC2_METADATA_DISABLED: "true"
+    steps:
+      - name: Delete from R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.r2_access_key_id }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.r2_secret_access_key }}
+          ACCOUNT_ID: ${{ secrets.cloudflare_account_id }}
+        run: |
+          set -euo pipefail
+          [[ "$PROJECT" =~ ^[A-Za-z0-9][A-Za-z0-9_-]*$ ]] || { echo "::error::invalid project '$PROJECT'"; exit 1; }
+          [[ "$PR_NUMBER" =~ ^[1-9][0-9]{0,9}$ ]] || { echo "::error::invalid pr_number '$PR_NUMBER'"; exit 1; }
+          r2() { aws --endpoint-url "https://$ACCOUNT_ID.r2.cloudflarestorage.com" --region auto "$@"; }
+
+          # Marker first, so the version disappears from the manifests before its files do.
+          r2 s3 rm "s3://$BUCKET/$PROJECT/_versions/pr_$PR_NUMBER"
+          r2 s3 rm "s3://$BUCKET/$PROJECT/pr_$PR_NUMBER/" --recursive --only-show-errors
+
+      - name: Update the PR comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          marker="<!-- cerulean-docs-preview -->"
+          ids=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | contains(\"$marker\"))) | .id")
+          id=${ids%%$'\n'*}
+          if [ -z "$id" ]; then
+            echo "No preview comment to update."
+            exit 0
+          fi
+          body="$marker
+          The docs preview for this PR was removed when the PR closed."
+          gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$id" -f body="$body" > /dev/null

@@ -1,0 +1,22 @@
+name: Docs PR build
+
+# Builds doc-builder's docs for a pull request, with no secrets. Because it runs the
+# PR's own workflows and kit, it also checks that a doc-builder change still builds.
+
+on:
+  pull_request:
+
+permissions: {}
+
+concurrency:
+  group: docs-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    uses: ./.github/workflows/build_docs.yml
+    permissions:
+      contents: read
+    with:
+      project: doc-builder
+      not_python_module: true

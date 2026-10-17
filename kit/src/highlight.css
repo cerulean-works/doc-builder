@@ -1,0 +1,97 @@
+/*
+  highlight.js theme for both appearances. Colors are the `--hl-*` tokens in app.css: muted,
+  legible hues on the code surface rather than a saturated rainbow.
+*/
+
+.hljs {
+	color: var(--hl-text);
+}
+
+.hljs-comment,
+.hljs-quote {
+	color: var(--hl-comment);
+	font-style: italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-doctag,
+.hljs-template-tag {
+	color: var(--hl-keyword);
+}
+
+.hljs-string,
+.hljs-regexp,
+.hljs-char.escape_,
+.hljs-symbol,
+.hljs-template-variable {
+	color: var(--hl-string);
+}
+
+.hljs-number,
+.hljs-bullet,
+.hljs-link {
+	color: var(--hl-number);
+}
+
+.hljs-title,
+.hljs-title.function_,
+.hljs-section,
+.hljs-selector-id {
+	color: var(--hl-title);
+}
+
+.hljs-type,
+.hljs-built_in,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-class .hljs-title {
+	color: var(--hl-type);
+}
+
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable.language_,
+.hljs-property,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-pseudo,
+.hljs-name {
+	color: var(--hl-attr);
+}
+
+.hljs-meta,
+.hljs-meta .hljs-keyword,
+.hljs-tag {
+	color: var(--hl-meta);
+}
+
+/* `>>>` / `...` prompts are wrapped in hljs-meta: keep them out of copied selections */
+.hljs-meta {
+	user-select: none;
+}
+
+.hljs-meta .hljs-string {
+	color: var(--hl-string);
+}
+
+.hljs-deletion {
+	color: var(--hl-deletion);
+}
+
+.hljs-addition {
+	color: var(--hl-addition);
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: 600;
+}
+
+.hljs-params {
+	color: var(--hl-text);
+}

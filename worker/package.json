@@ -1,0 +1,25 @@
+{
+  "name": "cerulean-docs-worker",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "wrangler dev --env production --var MANIFEST_CACHE_SECONDS:0",
+    "dev:preview": "wrangler dev --env preview --var MANIFEST_CACHE_SECONDS:0",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "seed": "node scripts/seed.mjs",
+    "deploy:production": "wrangler deploy --env production",
+    "deploy:preview": "wrangler deploy --env preview"
+  },
+  "devDependencies": {
+    "@cloudflare/vitest-plugin": "^1.4.4",
+    "@cloudflare/workers-types": "^5.20261016.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11",
+    "wrangler": "^4.151.1"
+  },
+  "packageManager": "pnpm@12.4.1"
+}

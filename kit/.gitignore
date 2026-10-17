@@ -1,0 +1,20 @@
+.DS_Store
+node_modules
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+!.env.example
+
+# Doc pages and assets are staged here at build time (docs/source/architecture.md, C5).
+# Only the kit's own layout files and favicon are tracked.
+/src/routes/*
+!/src/routes/+layout.svelte
+!/src/routes/+layout.ts
+!/src/routes/+error.svelte
+/static/*
+!/static/favicon.png
+
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*

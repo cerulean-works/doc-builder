@@ -1,0 +1,27 @@
+{
+	"project": "sample",
+	"title": "Sample",
+	"description": "A fixture project used to pin the doc-builder handoff contracts.",
+	"version": "v0.1.0",
+	"repo": "cerulean-works/sample",
+	"sourceRef": "0123456789abcdef0123456789abcdef01234567",
+	"toctree": {
+		"guide": [
+			{
+				"title": "Get started",
+				"sections": [
+					{ "title": "Introduction", "local": "index", "url": "/sample/v0.1.0/guide/" },
+					{ "title": "Quickstart", "local": "quickstart", "url": "/sample/v0.1.0/guide/quickstart/" }
+				]
+			}
+		],
+		"reference": [
+			{
+				"title": "API",
+				"sections": [
+					{ "title": "Utilities", "local": "api/utils", "url": "/sample/v0.1.0/reference/api/utils/" }
+				]
+			}
+		]
+	}
+}

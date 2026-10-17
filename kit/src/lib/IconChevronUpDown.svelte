@@ -1,0 +1,25 @@
+<script lang="ts">
+	interface Props {
+		classNames?: string;
+	}
+
+	let { classNames = "" }: Props = $props();
+</script>
+
+<svg
+	class={classNames}
+	xmlns="http://www.w3.org/2000/svg"
+	aria-hidden="true"
+	focusable="false"
+	width="14"
+	height="14"
+	viewBox="0 0 24 24"
+	fill="none"
+	stroke="currentColor"
+	stroke-width="1.75"
+	stroke-linecap="round"
+	stroke-linejoin="round"
+>
+	<path d="m7 15 5 5 5-5" />
+	<path d="m7 9 5-5 5 5" />
+</svg>

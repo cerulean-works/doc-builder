@@ -1,0 +1,56 @@
+# The doc-builder documentation, built and served by doc-builder itself. Preview it with:
+#
+#   doc-builder preview doc-builder docs/source --not_python_module
+#
+guide:
+  - title: Get started
+    sections:
+      - local: index
+        title: Introduction
+      - local: quickstart
+        title: Quickstart
+      - local: writing
+        title: Writing pages
+  - title: Python projects
+    sections:
+      - local: api-docs
+        title: Documenting a Python API
+      - local: testing-examples
+        title: Testing code examples
+  - title: Publishing
+    sections:
+      - local: publishing
+        title: Publishing a project
+      - local: deploying
+        title: Deploying doc-builder
+  - title: Contributing
+    sections:
+      - local: developing
+        title: Developing doc-builder
+      - local: production
+        title: How production works
+reference:
+  - title: Configuration
+    sections:
+      - local: toctree
+        title: _toctree.yml
+      - local: config
+        title: _config.py
+  - title: Writing
+    sections:
+      - local: syntax
+        title: Markdown syntax
+      - local: docstrings
+        title: Docstring format
+  - title: Tools
+    sections:
+      - local: cli
+        title: Command line
+      - local: workflows
+        title: Reusable workflows
+  - title: Hosting
+    sections:
+      - local: worker
+        title: Worker
+      - local: architecture
+        title: Architecture and contracts

@@ -1,0 +1,25 @@
+name: Docs PR publish
+
+# Publishes the preview of a PR's docs once "Docs PR build" succeeds. Runs from the
+# default branch, so a PR can't change what runs here with the secrets.
+
+on:
+  workflow_run:
+    workflows: ["Docs PR build"]
+    types: [completed]
+
+permissions: {}
+
+jobs:
+  publish:
+    uses: ./.github/workflows/publish_docs.yml
+    permissions:
+      actions: read
+      pull-requests: write
+    with:
+      project: doc-builder
+      environment: preview
+    secrets:
+      r2_access_key_id: ${{ secrets.DOC_BUILDER_R2_ACCESS_KEY_ID }}
+      r2_secret_access_key: ${{ secrets.DOC_BUILDER_R2_SECRET_ACCESS_KEY }}
+      cloudflare_account_id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

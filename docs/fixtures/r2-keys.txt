@@ -1,0 +1,24 @@
+# Expected R2 objects after publishing the fixture project `sample` as version `v0.1.0`
+# to the prod bucket (contract C2/C3). `<hash>` stands for any SvelteKit content hash.
+# Keys under _app/immutable/ and pagefind/ vary per build; tests should match them by prefix.
+sample/_project.json
+sample/_versions/v0.1.0
+sample/v0.1.0/_project.json
+sample/v0.1.0/guide/index.html
+sample/v0.1.0/guide.md
+sample/v0.1.0/guide/quickstart/index.html
+sample/v0.1.0/guide/quickstart.md
+sample/v0.1.0/reference/index.html
+sample/v0.1.0/reference/api/utils/index.html
+sample/v0.1.0/reference/api/utils.md
+sample/v0.1.0/imgs/pixel.png
+sample/v0.1.0/llms.txt
+sample/v0.1.0/llms-full.txt
+sample/v0.1.0/objects.inv
+sample/v0.1.0/404.html
+sample/v0.1.0/_app/version.json
+sample/v0.1.0/favicon.png
+sample/v0.1.0/_app/immutable/entry/start.<hash>.js
+sample/v0.1.0/_app/immutable/assets/0.<hash>.css
+sample/v0.1.0/pagefind/pagefind.js
+sample/v0.1.0/pagefind/pagefind-entry.json
