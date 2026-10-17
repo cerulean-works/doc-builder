@@ -64,7 +64,11 @@ jobs:
   publish:
     needs: build
     uses: cerulean-works/doc-builder/.github/workflows/publish_docs.yml@main
-    permissions: {}
+    # GitHub checks these against the preview jobs of publish_docs.yml even when they are skipped.
+    # The production upload itself runs with no permissions.
+    permissions:
+      actions: read
+      pull-requests: write
     with:
       project: flock
       environment: production

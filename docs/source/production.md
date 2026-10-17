@@ -144,7 +144,7 @@ cerulean-docs/
 
 Things that are **not** in the bucket:
 - Any stored list of projects or versions. `/_projects.json` and `/<p>/_versions.json` are computed from the listings above.
-- The Worker's code. It is deployed to Cloudflare separately by [`deploy_worker.yml`](workflows#deploy-worker).
+- The Worker's code. Cloudflare deploys it separately from this repository (see [Deploying doc-builder](deploying#6-connect-the-repository-in-cloudflare)).
 - Anything about pull requests. Previews live in their own bucket, `cerulean-docs-preview` (see [Previews](#previews)).
 
 ## How a publish stays consistent[[publish-order]]

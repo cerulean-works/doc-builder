@@ -8,7 +8,7 @@ doc-builder has four parts, and only the Worker is deployed in the usual sense:
 
 | Part | Where it runs | How a change reaches production |
 |---|---|---|
-| **Worker** (`worker/`) | Cloudflare, as two Workers: `cerulean-docs` and `cerulean-docs-preview` | [`deploy_worker.yml`](workflows#deploy-worker) deploys it on every push to `main` that touches `worker/`. |
+| **Worker** (`worker/`) | Cloudflare, as two Workers: `cerulean-docs` and `cerulean-docs-preview` | Cloudflare's Git integration (Workers Builds) deploys both on every push to `main` that touches `worker/`. |
 | **Buckets** | Cloudflare R2: `cerulean-docs` and `cerulean-docs-preview` | Created once, by hand. Projects fill them when they publish. |
 | **Python CLI and kit** (`src/`, `kit/`) | Inside each project's docs build, in GitHub Actions | Nothing is released. Each build checks out doc-builder at the ref the project pinned in `uses:`, so a merge to `main` is used by the next build of every project that pins `@main`. |
 | **Reusable workflows** (`.github/workflows/`) | Each project's GitHub Actions | Same as the CLI: read at the pinned ref on every run. |
@@ -75,13 +75,25 @@ Then deploy both environments again, or merge the change to `main` once step 6 i
 > [!WARNING]
 > Keep previews on their own domain. PR builds run JavaScript from the pull request, and a separate origin is what stops it from reaching anything on the production docs.
 
-### 6. Let CI deploy the Worker
+### 6. Connect the repository in Cloudflare
 
-[`deploy_worker.yml`](workflows#deploy-worker) needs two secrets in this repository:
-- `CLOUDFLARE_API_TOKEN`: create it from the **Edit Cloudflare Workers** template, and add **Zone → Workers Routes → Edit** for the custom domains.
-- `CLOUDFLARE_ACCOUNT_ID`: already available if you added the organization secret in step 3.
+Cloudflare deploys the Worker itself, through its Git integration. Each environment is a separate Worker, so connect this repository to **both** `cerulean-docs` and `cerulean-docs-preview`: in the dashboard, open the Worker and go to **Settings → Build**. Use these settings:
 
-From then on, every push to `main` that touches `worker/` runs the Worker's tests and deploys both environments.
+| Setting | `cerulean-docs` | `cerulean-docs-preview` |
+|---|---|---|
+| Git repository | `cerulean-works/doc-builder` | `cerulean-works/doc-builder` |
+| Branch | `main` | `main` |
+| Root directory | `worker` | `worker` |
+| Build command | `pnpm run typecheck && pnpm test` | `pnpm run typecheck && pnpm test` |
+| Deploy command | `pnpm run deploy:production` | `pnpm run deploy:preview` |
+| Builds for non-production branches | off | off |
+| Build watch paths | include `worker/*` | include `worker/*` |
+
+- **Root directory** must be `worker`. Without it, the commands run at the repository root, where there's no `package.json`, and pnpm fails.
+- **The deploy command** must name the environment. Cloudflare's default, `npx wrangler deploy`, would deploy neither of them.
+- **The build command** runs the Worker's type check and tests, so a change that breaks them is never deployed. You can leave it empty to deploy without them.
+
+Cloudflare installs the dependencies with the pnpm version pinned in `worker/package.json`. It needs no secrets in GitHub. From then on, every push to `main` that touches `worker/` builds and deploys both Workers, and the result shows as a check on the commit in GitHub.
 
 ### 7. Publish the first docs
 
@@ -107,7 +119,7 @@ After the first deployment, changes reach production through `main`:
 
 | You change | What happens after the merge | What to do |
 |---|---|---|
-| `worker/` | `deploy_worker.yml` tests and deploys both Workers within a few minutes. | Watch the **Deploy Worker** run. Run it by hand from the Actions tab to redeploy without a change. |
+| `worker/` | Cloudflare tests and deploys both Workers within a few minutes. | Watch the check on the commit, or the Worker's **Deployments** tab in the dashboard. To redeploy without a change, retry the latest build there. |
 | `src/` or `kit/` | The next docs build of each project pinned to `@main` uses the change. | To roll it out now, run each project's **Docs** workflow by hand on `main`. Tags keep their old build unless you also run it on them. |
 | `.github/workflows/` | The next run of each project pinned to `@main` uses it. | Check the next build and publish in one project before relying on it. |
 | `docs/source/` | `docs.yml` publishes these docs. | Nothing. |

@@ -63,7 +63,3 @@ Removes a PR's preview: first its version marker, then its files. It also edits 
 | `pr_number` | `${{ github.event.pull_request.number }}` |
 
 It takes the same three secrets as `publish_docs.yml`.
-
-## deploy_worker.yml[[deploy-worker]]
-
-Runs in this repository, not in projects. On every push to `main` that touches `worker/`, and when run by hand, it tests the Worker and deploys it to both environments. It needs the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.

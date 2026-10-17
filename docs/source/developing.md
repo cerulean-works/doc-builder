@@ -69,5 +69,4 @@ pnpm run dev            # http://localhost:8787/
 | `test.yml` | Python tests, the end-to-end build of `docs/source/`, Worker tests |
 | `quality.yml` | `ruff` |
 | `lint-svelte-kit.yml` | kit checks |
-| `deploy_worker.yml` | deploys the Worker on pushes to `main` that touch `worker/` |
 | `docs.yml`, `docs-pr*.yml` | build and publish these docs, using the same reusable workflows as every other project |
