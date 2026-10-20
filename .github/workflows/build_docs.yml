@@ -35,6 +35,10 @@ on:
         type: string
         default: ""
         description: "Comma-separated modules to mock during autodoc (doc-builder --mock_deps)."
+      version_tag_suffix:
+        type: string
+        default: "src/"
+        description: "Path after the source ref in source links (doc-builder --version_tag_suffix). Empty for packages at the repo root."
       pre_command:
         type: string
         default: ""
@@ -190,10 +194,11 @@ jobs:
           SITE_URL: ${{ steps.ctx.outputs.site_url }}
           NOT_PYTHON_MODULE: ${{ inputs.not_python_module }}
           MOCK_DEPS: ${{ inputs.mock_deps }}
+          VERSION_TAG_SUFFIX: ${{ inputs.version_tag_suffix }}
         run: |
           set -euo pipefail
           source .venv/bin/activate
-          args=(--version "$VERSION" --build_dir build_dir --html --repo "$REPO" --source_ref "$SHA" --site_url "$SITE_URL")
+          args=(--version "$VERSION" --build_dir build_dir --html --repo "$REPO" --source_ref "$SHA" --site_url "$SITE_URL" --version_tag_suffix "$VERSION_TAG_SUFFIX")
           if [ "$NOT_PYTHON_MODULE" == true ]; then args+=(--not_python_module); fi
           if [ -n "$MOCK_DEPS" ]; then args+=(--mock_deps "$MOCK_DEPS"); fi
           doc-builder build "$PROJECT" "$DOCS" "${args[@]}"
