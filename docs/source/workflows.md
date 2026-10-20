@@ -15,6 +15,7 @@ Builds one version with `doc-builder build --html` and uploads the result as the
 | `python_version` | `3.12` | Python for the build. |
 | `not_python_module` | `false` | Skip installing the package and autodoc. |
 | `mock_deps` | empty | Modules to mock during autodoc. |
+| `version_tag_suffix` | `src/` | Path after the commit in source links (`…/blob/<sha>/src/…`). Set it to `""` when the package sits at the repository root. |
 | `pre_command` | empty | Shell command run in the build environment before building. |
 | `repo` | the calling repository | `owner/name` to check out and link to. |
 | `site_url` | `https://docs.cerulean.works` | Origin for `llms.txt` on non-PR builds. |
