@@ -1,6 +1,6 @@
 /*
-  highlight.js theme for both appearances. Colors are the `--hl-*` tokens in app.css: muted,
-  legible hues on the code surface rather than a saturated rainbow.
+  highlight.js theme for both appearances. The `--hl-*` tokens in app.css give strings,
+  numbers, properties and keywords distinct, saturated colors on each code surface.
 */
 
 .hljs {
@@ -52,6 +52,7 @@
 
 .hljs-attr,
 .hljs-attribute,
+.hljs-variable,
 .hljs-variable.language_,
 .hljs-property,
 .hljs-selector-attr,
@@ -59,6 +60,19 @@
 .hljs-selector-pseudo,
 .hljs-name {
 	color: var(--hl-attr);
+}
+
+.language-bash .hljs-built_in,
+.language-sh .hljs-built_in,
+.language-zsh .hljs-built_in,
+.language-shellscript .hljs-built_in,
+.language-shell-script .hljs-built_in {
+	color: var(--hl-title);
+}
+
+.hljs-operator,
+.hljs-punctuation {
+	color: var(--c-muted);
 }
 
 .hljs-meta,

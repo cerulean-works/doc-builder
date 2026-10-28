@@ -1,11 +1,11 @@
 /*
   Doc content. Generated pages carry no classes of their own (docs/source/architecture.md, C5), so
-  everything inside `.doc-content` is styled here: Newsreader prose at a docs density,
-  DM Sans for tables and labels, system monospace for code.
+  everything inside `.doc-content` is styled here: Geist prose at a docs density,
+  Host Grotesk for headings and labels, system monospace for code.
 */
 
 .doc-content {
-	font: 400 18px/1.6 var(--font-editorial);
+	font: 400 16px/1.65 var(--font-reading);
 	color: var(--c-ink);
 	overflow-wrap: break-word;
 }
@@ -26,21 +26,21 @@
 
 .doc-content h1 {
 	margin: 0 0 24px;
-	font-size: 42px;
-	line-height: 1.12;
-	letter-spacing: -0.02em;
+	font-size: 34px;
+	line-height: 40px;
+	letter-spacing: -0.025em;
 }
 
 .doc-content h2 {
-	margin: 56px 0 16px;
-	font-size: 30px;
+	margin: 40px 0 16px;
+	font-size: 26px;
 	line-height: 1.18;
 	letter-spacing: -0.015em;
 }
 
 .doc-content h3 {
-	margin: 40px 0 12px;
-	font-size: 23px;
+	margin: 32px 0 12px;
+	font-size: 21px;
 	line-height: 1.25;
 	letter-spacing: -0.01em;
 }
@@ -216,6 +216,7 @@
 	padding: 0.1em 0.35em;
 	background: var(--c-surface);
 	border: 1px solid color-mix(in srgb, var(--c-rule) 70%, transparent);
+	border-radius: 4px;
 	font-size: 0.8em;
 	overflow-wrap: anywhere;
 }
@@ -231,11 +232,11 @@
 .code-block pre,
 .doc-content pre {
 	margin: 0;
-	padding: 14px 18px;
+	padding: 12px 16px;
 	overflow-x: auto;
 	background: var(--c-surface);
-	border: 1px solid var(--c-rule);
-	font-size: 14px;
+	border-radius: var(--radius-control);
+	font-size: 13px;
 	line-height: 1.6;
 	tab-size: 4;
 }
@@ -278,6 +279,7 @@
 	min-width: 28px;
 	padding: 0 7px;
 	border: 1px solid var(--c-rule);
+	border-radius: var(--radius-item);
 	background: var(--c-paper);
 	color: var(--c-muted);
 	font: 400 12px/1 var(--font-ui);
@@ -316,17 +318,24 @@
 
 /* ---------------------------------------------------------------- tables */
 
-.doc-content table {
-	display: block;
+.doc-content .table-scroll {
 	max-width: 100%;
 	overflow-x: auto;
-	border-collapse: collapse;
-	font: 400 15px/1.5 var(--font-ui);
 }
 
-.doc-content table.full-width {
+.doc-content table {
 	display: table;
 	width: 100%;
+	border-collapse: collapse;
+	font: 400 14px/1.5 var(--font-reading);
+}
+
+.doc-content .table-scroll > table {
+	margin-bottom: 0;
+}
+
+.doc-content .table-scroll {
+	margin-bottom: 20px;
 }
 
 .doc-content th,
@@ -345,6 +354,12 @@
 .doc-content th {
 	font-weight: 500;
 	border-bottom-color: var(--c-muted);
+}
+
+.doc-content :is(th, td) code {
+	/* Reserve room for whole identifiers instead of squeezing them mid-word. */
+	overflow-wrap: normal;
+	word-break: normal;
 }
 
 .doc-content table img {
@@ -372,10 +387,13 @@
 	padding: 14px 18px;
 	border: 1px solid var(--c-rule);
 	border-left: 3px solid var(--callout-accent);
-	background: color-mix(in srgb, var(--callout-accent) 5%, var(--c-paper));
+	border-color: var(--c-divider);
+	border-left-color: var(--callout-accent);
+	border-radius: var(--radius-control);
+	background: var(--c-surface);
 	color: var(--c-ink);
 	font-style: normal;
-	font-size: 17px;
+	font-size: 15px;
 }
 
 .doc-content blockquote.warning {
@@ -435,17 +453,20 @@
 .doc-tabs-list {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 20px;
+	gap: 2px;
+	width: fit-content;
+	max-width: 100%;
 	margin-bottom: 14px;
-	border-bottom: 1px solid var(--c-rule);
-	font: 400 15px/1 var(--font-ui);
+	padding: 3px;
+	border-radius: var(--radius-control);
+	background: var(--c-hover);
+	font: 500 14px/1 var(--font-ui);
 }
 
 .doc-tab {
-	margin-bottom: -1px;
-	padding: 8px 0 10px;
+	padding: 6px 10px;
 	border: 0;
-	border-bottom: 2px solid transparent;
+	border-radius: var(--radius-item);
 	background: transparent;
 	color: var(--c-muted);
 	font: inherit;
@@ -457,7 +478,8 @@
 
 .doc-tab[aria-selected="true"] {
 	color: var(--c-ink);
-	border-bottom-color: var(--c-link);
+	background: var(--c-paper);
+	box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
 }
 
 /* ---------------------------------------------------------------- media */
@@ -528,6 +550,7 @@
 	padding: 8px 12px;
 	background: var(--c-surface);
 	border: 1px solid var(--c-rule);
+	border-radius: var(--radius-control);
 }
 
 .docstring-signature {
@@ -604,7 +627,7 @@ span.docstring-return-type.has-description {
 }
 
 .docstring-details {
-	font-size: 17px;
+	font-size: 16px;
 }
 
 .docstring-details.collapsed {
@@ -686,6 +709,8 @@ span.docstring-return-type.has-description {
 	padding: 8px 12px;
 	background: var(--c-paper);
 	border: 1px solid var(--c-muted);
+	border-radius: var(--radius-control);
+	box-shadow: 0 4px 12px rgb(0 0 0 / 0.12);
 	color: var(--c-ink);
 	font: 400 14px/1.5 var(--font-ui);
 	overflow-wrap: break-word;
@@ -705,11 +730,11 @@ span.docstring-return-type.has-description {
 
 @media (max-width: 899px) {
 	.doc-content {
-		font-size: 17px;
+		font-size: 16px;
 	}
 
 	.doc-content h1 {
-		font-size: 34px;
+		font-size: 30px;
 	}
 
 	.doc-content h2 {
