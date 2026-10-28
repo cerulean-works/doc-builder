@@ -1,4 +1,4 @@
-import hljs from "highlight.js";
+import { highlightCode } from "../highlight.js";
 import { mdsvex } from "mdsvex";
 import katex from "katex";
 import { visit, SKIP } from "unist-util-visit";
@@ -7,18 +7,6 @@ import { readdir } from "fs/promises";
 import path from "path";
 import * as cheerio from "cheerio";
 import { renderSvelteChars } from "../utils.js";
-
-// Wrap >>> and ... at the start of lines in hljs-meta spans so the CSS
-// `select-none` rule makes them unselectable when copying code.
-// highlight.js only does this natively for python-repl/pycon; for bash and
-// other languages the prompt appears as plain &gt;&gt;&gt; in the HTML.
-hljs.addPlugin({
-	"after:highlight": (result) => {
-		result.value = result.value
-			.replace(/^(&gt;&gt;&gt;[ \t])/gm, '<span class="hljs-meta">$1</span>')
-			.replace(/^(\.\.\.[ \t])/gm, '<span class="hljs-meta">$1</span>');
-	},
-});
 
 /**
  * inside `<code>` html elements, we need to replace `&amp;` with `&`
@@ -83,6 +71,13 @@ export const mdsvexPreprocess = {
 			if (stretchTables) {
 				processed.code = addFullWidthClassToTables(processed.code);
 			}
+			// Keep native table layout at the column width; overflow belongs to a wrapper.
+			processed.code = processed.code
+				.replace(
+					/<table\b/g,
+					'<div class="table-scroll" tabindex="0" role="region" aria-label="Table"><table'
+				)
+				.replace(/<\/table>/g, "</table></div>");
 			return processed;
 		}
 		return { code: content };
@@ -393,10 +388,6 @@ const _mdsvexPreprocess = mdsvex({
 	highlight: {
 		highlighter: function (code, lang) {
 			const REGEX_CODE_INPUT = /^(>>>\s|\.\.\.\s)/m;
-			const _highlight = (source) =>
-				lang && hljs.getLanguage(lang)
-					? hljs.highlight(source, { language: lang, ignoreIllegals: true }).value
-					: hljs.highlightAuto(source).value;
 			const base64 = (val) => btoa(encodeURIComponent(val));
 			const escape = (source) =>
 				source
@@ -418,7 +409,7 @@ const _mdsvexPreprocess = mdsvex({
 			return code
 				.split(REGEX_FRAMEWORKS_SPLIT)
 				.map((group) => {
-					const highlighted = _highlight(group);
+					const highlighted = highlightCode(group, lang);
 					// filter out outputs if the code was generated interactively
 					// `>>> for i in range(5):` becomes `for i in range(5):`
 					if (group.match(REGEX_CODE_INPUT)) {

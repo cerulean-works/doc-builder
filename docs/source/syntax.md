@@ -43,6 +43,7 @@ print("highlighted")
 ````
 
 - **Language:** any language known to highlight.js. `bash`, `python`, `yaml`, `json`, `ts` and `diff` are the common ones.
+- **Shell and environment files:** `bash`, `sh` and `zsh` highlight commands, flags, assignments and variable expansion. Use `dotenv` or `env` for `.env` files, including unquoted values. Use `text` or `plaintext` to leave a block unhighlighted.
 - **Copy button:** every block gets one.
 - **Wrapping:** `<!-- WRAP CODE BLOCKS -->` on its own line wraps every code block on the page instead of scrolling.
 - **Runnable examples:** fences marked `py runnable` (or `python runnable:<label>`) can be run as tests. See [Testing code examples](testing-examples).
@@ -68,7 +69,7 @@ print("highlighted")
 
 ## Tables
 
-Tables size to their content. To stretch every table on a page to the full content width, put `<!-- STRETCH TABLES -->` on its own line. Wide tables scroll inside their own box on small screens.
+Tables fill the content column. Wide tables scroll inside their own box on small screens. The older `<!-- STRETCH TABLES -->` marker is still accepted but is no longer needed.
 
 ## Tabs
 

@@ -1,12 +1,13 @@
 <script lang="ts">
-	// Self-hosted type: Newsreader (editorial) and DM Sans (utility); KaTeX for math.
-	import "@fontsource/newsreader/400.css";
-	import "@fontsource/newsreader/400-italic.css";
-	import "@fontsource/newsreader/500.css";
-	import "@fontsource/newsreader/600.css";
-	import "@fontsource/dm-sans/400.css";
-	import "@fontsource/dm-sans/500.css";
-	import "@fontsource/dm-sans/600.css";
+	// Self-hosted type: Host Grotesk (headings and UI), Geist (reading); KaTeX for math.
+	import "@fontsource/host-grotesk/400.css";
+	import "@fontsource/host-grotesk/500.css";
+	import "@fontsource/host-grotesk/600.css";
+	import "@fontsource/geist/400.css";
+	import "@fontsource/geist/400-italic.css";
+	import "@fontsource/geist/500.css";
+	import "@fontsource/geist/600.css";
+	import "@fontsource/geist/700.css";
 	import "katex/dist/katex.min.css";
 	import "../app.css";
 	import { base } from "$app/paths";
