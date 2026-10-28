@@ -16,6 +16,10 @@ on:
         type: string
         default: ""
         description: "Version to build. Default: pr_<number> on pull_request, the tag on tag pushes, else main."
+      source_ref:
+        type: string
+        default: ""
+        description: "Source branch, tag or commit to build with this builder. Default: triggering commit. Ignored for pull requests."
       path_to_docs:
         type: string
         default: ""
@@ -137,10 +141,11 @@ jobs:
           path: _doc-builder
           persist-credentials: false
 
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - id: source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           repository: ${{ steps.ctx.outputs.repo }}
-          ref: ${{ steps.ctx.outputs.sha }}
+          ref: ${{ steps.ctx.outputs.is_pr != 'true' && inputs.source_ref || steps.ctx.outputs.sha }}
           path: ${{ steps.ctx.outputs.dir }}
           persist-credentials: false
 
@@ -190,7 +195,7 @@ jobs:
           VERSION: ${{ steps.ctx.outputs.version }}
           DOCS: ${{ steps.ctx.outputs.docs }}
           REPO: ${{ steps.ctx.outputs.repo }}
-          SHA: ${{ steps.ctx.outputs.sha }}
+          SHA: ${{ steps.source.outputs.commit }}
           SITE_URL: ${{ steps.ctx.outputs.site_url }}
           NOT_PYTHON_MODULE: ${{ inputs.not_python_module }}
           MOCK_DEPS: ${{ inputs.mock_deps }}
