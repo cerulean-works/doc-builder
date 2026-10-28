@@ -7,14 +7,19 @@ on:
   push:
     branches: [main]
     tags: ["v*"]
-  # Run by hand on main, or on a tag to rebuild that version.
+  # Run on main to rebuild a release with the current builder and theme.
   workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Existing release tag to rebuild (e.g. v0.1.0). Leave empty to build this ref."
+        type: string
+        default: ""
 
 permissions: {}
 
 # One run per ref at a time, in push order, so an older build never publishes over a newer one.
 concurrency:
-  group: docs-${{ github.ref }}
+  group: docs-${{ inputs.release_version || github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -24,6 +29,8 @@ jobs:
       contents: read
     with:
       project: doc-builder
+      version: ${{ inputs.release_version || '' }}
+      source_ref: ${{ inputs.release_version && format('refs/tags/{0}', inputs.release_version) || '' }}
       not_python_module: true
 
   publish:
@@ -36,6 +43,7 @@ jobs:
       pull-requests: write
     with:
       project: doc-builder
+      version: ${{ inputs.release_version || '' }}
       environment: production
     secrets:
       r2_access_key_id: ${{ secrets.DOC_BUILDER_R2_ACCESS_KEY_ID }}

@@ -10,6 +10,7 @@ Builds one version with `doc-builder build --html` and uploads the result as the
 |---|---|---|
 | `project` | required | Project name, the first URL segment. |
 | `version` | `pr_<N>` on pull requests, the tag on tag pushes, else `main` | Version to build. |
+| `source_ref` | triggering commit | Source branch, tag or commit to build. Ignored on pull requests, which always build the PR's head commit. |
 | `path_to_docs` | `<repo name>/docs/source` | Docs folder, relative to the workspace. The repository is checked out into a folder named after it. |
 | `package_path` | `<repo name>` | What to `pip install`, extras allowed (`flock[docs]`). |
 | `python_version` | `3.12` | Python for the build. |
@@ -22,6 +23,12 @@ Builds one version with `doc-builder build --html` and uploads the result as the
 | `preview_site_url` | `https://docs-preview.cerulean.works` | Origin for `llms.txt` on PR builds. |
 
 The doc-builder code and UI used for the build are exactly the ones at the ref the caller pinned in `uses:`.
+
+### Rebuild a release with the current theme
+
+Doc-builder's **Docs** workflow accepts a `release_version` when run manually. Select `main` as the workflow branch and enter an existing tag such as `v0.1.0`. It rebuilds that tag's documentation with the builder and theme from `main`, then publishes back to the same versioned URL. Leaving the field empty preserves the usual behavior.
+
+Rebuilding `main` alone does not update released versions. The default docs URL opens the highest stable release, so rebuild that release as well when updating its theme. Running the workflow on the old tag itself uses the old builder too.
 
 ## publish_docs.yml[[publish-docs]]
 
