@@ -184,9 +184,10 @@ function getTitleText(node) {
  * surrounding `<script>` element.
  * @param {unknown} headingTree
  */
-export function metadataScript(headingTree) {
+export function metadataScript(headingTree, description = "") {
 	const literal = JSON.stringify(JSON.stringify(headingTree ?? null)).replaceAll("<", "\\u003c");
-	return `<script module>export const metadata = ${literal};</script>`;
+	const summary = JSON.stringify(description).replaceAll("<", "\\u003c");
+	return `<script module>export const metadata = ${literal}; export const description = ${summary};</script>`;
 }
 
 function treeVisitor() {
@@ -239,6 +240,22 @@ function treeVisitor() {
 				bodyEndOffset = Math.min(bodyEndOffset, node.position?.start?.offset ?? Infinity);
 			}
 		});
+		// Only opening prose becomes a preview description: skip headings, code, tables and callouts.
+		const description =
+			tree.children
+				.filter(
+					(node) =>
+						node.type === "paragraph" && isWithinDocBody(node) && !isMarker(node.children[0]?.value)
+				)
+				.map((node) =>
+					// Decode inline-code entities while preserving literal angle brackets as text.
+					cheerio
+						.load(descriptionText(node).replaceAll("<", "&lt;"), null, false)
+						.text()
+						.replace(/\s+/g, " ")
+						.trim()
+				)
+				.find(Boolean) ?? "";
 		// Drop the markers themselves (a marker on its own line is a one-child paragraph).
 		visit(tree, ["paragraph", "text", "html"], (node, index, parent) => {
 			if (node.type === "paragraph") {
@@ -260,7 +277,10 @@ function treeVisitor() {
 
 		tree.children.unshift({
 			type: "html",
-			value: metadataScript(headings[0] ?? null),
+			value: metadataScript(
+				headings[0] ?? null,
+				description.length > 200 ? `${description.slice(0, 197).trimEnd()}…` : description
+			),
 		});
 	}
 
@@ -380,6 +400,13 @@ function treeVisitor() {
 				: [];
 		node.data.hProperties.className = Array.from(new Set([...normalizedClasses, marker]));
 	}
+}
+
+/** Plain text from a Markdown paragraph, without HTML tags or image URLs. */
+function descriptionText(node) {
+	if (["html", "image", "imageReference"].includes(node.type)) return "";
+	if (node.children) return node.children.map(descriptionText).join("");
+	return node.value ?? "";
 }
 
 const _mdsvexPreprocess = mdsvex({

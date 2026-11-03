@@ -10,6 +10,7 @@ export default defineConfig({
 		// Compile-time constants for the (project, version) being built (docs/source/architecture.md, C5).
 		__DOCS_PROJECT__: JSON.stringify(project),
 		__DOCS_VERSION__: JSON.stringify(version),
+		__DOCS_SITE_URL__: JSON.stringify(process.env.DOCS_SITE_URL || "https://docs.cerulean.works"),
 	},
 	optimizeDeps: {
 		// Generated `+page.ts` files import `metadata`, which only exists once mdsvex has run, so

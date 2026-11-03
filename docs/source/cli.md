@@ -20,7 +20,7 @@ doc-builder build <project> <path_to_docs> [options]
 | `--not_python_module` | off | The docs have no Python package: skip autodoc and `objects.inv`. |
 | `--repo` | from `_config.py`, else `cerulean-works/<project>` | GitHub repository for source and edit links. |
 | `--source_ref` | the default branch | Commit or branch that source and edit links point to. CI passes the commit being built. |
-| `--site_url` | `https://docs.cerulean.works` | Absolute origin written into `llms.txt`. |
+| `--site_url` | `https://docs.cerulean.works` | Public origin for `llms.txt`, canonical URLs and link previews. |
 | `--mock_deps` | none | Comma-separated modules to mock during autodoc, for example `torch,triton`. |
 | `--version_tag_suffix` | `src/` | Path inserted after the ref in source links (`…/blob/<ref>/src/…`). |
 | `--emit-warning` | off | Report conversion warnings, such as bare `assert`s in runnable code blocks. |

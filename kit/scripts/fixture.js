@@ -70,6 +70,7 @@ try {
 		code = await run(bin("vite"), ["dev", ...process.argv.slice(3)]);
 	} else {
 		code = await run(bin("vite"), ["build"]);
+		if (code === 0) code = await run(process.execPath, ["scripts/social-images.js"]);
 		if (code === 0) code = await run(bin("pagefind"), ["--site", "build"]);
 	}
 } finally {

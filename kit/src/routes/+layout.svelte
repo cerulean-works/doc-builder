@@ -46,6 +46,17 @@
 	// The page's own H1 carries the title row; pages without one get it from the layout.
 	let contentHasH1 = $derived(headings?.depth === 1);
 	let isDocPage = $derived(!page.error && !!page.data.section);
+	let description = $derived(
+		page.data.description || site.description || `${site.title} documentation.`
+	);
+	// Use the configured public origin, never SvelteKit's synthetic prerender origin.
+	let canonicalUrl = $derived(new URL(page.url.pathname, __DOCS_SITE_URL__).href);
+	let imageUrl = $derived(
+		new URL(
+			`${base}/social/${page.url.pathname.slice(base.length + 1).replace(/\/$/, "")}.png`,
+			__DOCS_SITE_URL__
+		).href
+	);
 
 	setPageTitleContext({
 		get local() {
@@ -81,11 +92,25 @@
 
 <svelte:head>
 	<title>{documentTitle}</title>
-	{#if site.description}
-		<meta name="description" content={site.description} />
+	{#if isDocPage}
+		<link rel="canonical" href={canonicalUrl} />
+		<meta name="description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Cerulean Docs" />
+		<meta property="og:title" content={documentTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={imageUrl} />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={`${title} · ${site.title} documentation`} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={documentTitle} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={imageUrl} />
+		<meta name="twitter:image:alt" content={`${title} · ${site.title} documentation`} />
 	{/if}
-	<meta property="og:site_name" content="Cerulean Docs" />
-	<meta property="og:title" content={documentTitle} />
 </svelte:head>
 
 {#snippet titleActions()}

@@ -20,9 +20,12 @@ End-to-end HTML build of doc-builder's own docs, `docs/source/` (contract C3). N
 
 import json
 import shutil
+import struct
 import subprocess
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlsplit
 
 import pytest
 
@@ -35,6 +38,21 @@ pytestmark = [
         reason="needs node and pnpm",
     ),
 ]
+
+
+class PageHead(HTMLParser):
+    def __init__(self, html):
+        super().__init__()
+        self.meta = {}
+        self.canonical = None
+        self.feed(html)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "meta":
+            self.meta[attrs.get("property") or attrs.get("name")] = attrs.get("content")
+        elif tag == "link" and attrs.get("rel") == "canonical":
+            self.canonical = attrs.get("href")
 
 
 def test_build_own_docs_html(tmp_path):
@@ -81,6 +99,25 @@ def test_build_own_docs_html(tmp_path):
         html = (out / page).read_text(encoding="utf-8")
         assert html.lstrip().lower().startswith("<!doctype html>")
         assert "/doc-builder/main/_app/" in html
+        head = PageHead(html)
+        url = f"https://docs.example.com/doc-builder/main/{page.removesuffix('index.html')}"
+        assert head.canonical == head.meta["og:url"] == url
+        assert head.meta["twitter:card"] == "summary_large_image"
+        assert head.meta["og:description"] == head.meta["description"] == head.meta["twitter:description"]
+        image = head.meta["og:image"]
+        assert image == head.meta["twitter:image"]
+        assert image.startswith("https://docs.example.com/doc-builder/main/social/")
+        image_path = urlsplit(image).path.removeprefix("/doc-builder/main/")
+        png = (out / image_path).read_bytes()
+        assert png[:8] == b"\x89PNG\r\n\x1a\n"
+        assert struct.unpack(">II", png[16:24]) == (1200, 630)
+    writing_head = PageHead((out / "guide/writing/index.html").read_text())
+    assert writing_head.meta["description"].startswith("Pages are Markdown files (.md or .mdx)")
+    assert len(writing_head.meta["description"]) <= 200
+    assert "og:image" not in PageHead((out / "404.html").read_text()).meta
+    assert not (out / "social/reference.png").exists()  # redirect stub, not a document
+    document_count = sum("og:image" in PageHead(path.read_text()).meta for path in out.rglob("index.html"))
+    assert len(list((out / "social").rglob("*.png"))) == document_count
     assert "HF_DOC_BODY" not in (out / "guide" / "writing" / "index.html").read_text(encoding="utf-8")
 
     writing = (out / "guide" / "writing.md").read_text(encoding="utf-8")
