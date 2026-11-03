@@ -11,6 +11,14 @@ Each page starts with a single `#` heading. It becomes the page title in the bro
 
 Keep a page focused on one task or one topic. A long page with many `##` sections is easier to scan than many tiny pages.
 
+## Link previews
+
+HTML builds include Open Graph and Twitter card metadata and a 1200 × 630 PNG for every documentation page. The image shows the page title, project, section and version in the Cerulean theme. It is generated during the build and served as a static asset.
+
+The first paragraph of ordinary Markdown prose supplies the preview description, shortened to 200 characters. Headings, code blocks, tables and callouts are skipped. If there is no prose paragraph, the description falls back to `project_description` in [`_config.py`](config), then to the project name followed by “documentation.”
+
+The canonical URL and image URL use the build's `--site_url`, which defaults to `https://docs.cerulean.works`. Set it to the public origin when building for another domain. The reusable publishing workflow sets it for both production and pull request previews.
+
 ## Guide or Reference?
 
 Put a page in the **Guide** when readers follow it: tutorials, how-tos, explanations. Put it in the **Reference** when readers look things up: API docs, configuration keys, CLI flags. The choice is made in [`_toctree.yml`](toctree), not by the file's location, so you can move a page between sections without renaming it.

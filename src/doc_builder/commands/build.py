@@ -134,13 +134,14 @@ def run_pnpm(pnpm_args, cwd, env=None, quiet=True):
     )
 
 
-def docs_node_env(project, version):
+def docs_node_env(project, version, site_url=DEFAULT_SITE_URL):
     """
     Environment for the kit build/dev server (contract C5): the SvelteKit base path is `/<DOCS_PROJECT>/<DOCS_VERSION>`.
     """
     env = os.environ.copy()
     env["DOCS_PROJECT"] = project
     env["DOCS_VERSION"] = version
+    env["DOCS_SITE_URL"] = site_url
     return env
 
 
@@ -241,7 +242,7 @@ def build_command(args):
         run_pnpm(["install", "--frozen-lockfile"], cwd=kit_dir)
 
         print("Building HTML files. This will take a while :-)")
-        run_pnpm(["run", "build"], cwd=kit_dir, env=docs_node_env(project, version))
+        run_pnpm(["run", "build"], cwd=kit_dir, env=docs_node_env(project, version, args.site_url))
 
         if output_path.exists():
             shutil.rmtree(output_path)
@@ -307,7 +308,7 @@ def build_command_parser(subparsers=None):
         "--site_url",
         type=str,
         default=DEFAULT_SITE_URL,
-        help="Absolute origin of the docs site, used in `llms.txt`.",
+        help="Absolute origin of the docs site, used in `llms.txt`, canonical URLs and link previews.",
     )
     parser.add_argument(
         "--version_tag_suffix",

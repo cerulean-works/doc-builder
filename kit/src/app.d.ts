@@ -4,6 +4,7 @@ declare global {
 	// Injected at build time via Vite `define` (see vite.config.ts)
 	const __DOCS_PROJECT__: string;
 	const __DOCS_VERSION__: string;
+	const __DOCS_SITE_URL__: string;
 
 	namespace App {
 		// interface Error {}
@@ -12,6 +13,7 @@ declare global {
 			/** Set by every generated `+page.ts` (docs/source/architecture.md, C5). */
 			section?: "guide" | "reference";
 			title?: string;
+			description?: string;
 			editUrl?: string;
 			mdUrl?: string;
 			headings?: import("$lib/types").HeadingNode | null;

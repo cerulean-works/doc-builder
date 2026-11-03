@@ -30,6 +30,7 @@ export default ts.config(
 				// Injected at build time via Vite `define` (see vite.config.ts)
 				__DOCS_PROJECT__: "readonly",
 				__DOCS_VERSION__: "readonly",
+				__DOCS_SITE_URL__: "readonly",
 			},
 		},
 	},

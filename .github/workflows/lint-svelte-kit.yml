@@ -43,6 +43,10 @@ jobs:
         run: pnpm run --if-present eslint
         working-directory: kit
 
+      - name: Testing link preview metadata
+        run: pnpm run test:metadata
+        working-directory: kit
+
       - name: Checking type errors
         run: pnpm run check
         working-directory: kit
