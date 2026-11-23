@@ -47,7 +47,7 @@ reference:
 ## Development
 
 ```bash
-uv sync --python 3.12 --extra dev
+uv sync --python 3.14 --extra dev
 uv run pytest tests/
 cd kit && pnpm install && pnpm run dev:fixture
 cd worker && pnpm install && pnpm test

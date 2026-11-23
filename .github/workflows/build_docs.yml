@@ -30,7 +30,7 @@ on:
         description: "Package to pip-install, relative to the workspace, extras allowed (e.g. flock[docs]). Default: <repo name>."
       python_version:
         type: string
-        default: "3.12"
+        default: "3.14"
       not_python_module:
         type: boolean
         default: false

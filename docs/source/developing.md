@@ -13,7 +13,7 @@ They agree on the contracts in [Architecture and contracts](architecture). If yo
 ## Python
 
 ```bash
-uv sync --python 3.12 --extra dev
+uv sync --python 3.14 --extra dev
 uv run pytest tests/
 uv run ruff check src tests && uv run ruff format --check src tests
 ```

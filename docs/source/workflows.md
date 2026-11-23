@@ -13,7 +13,7 @@ Builds one version with `doc-builder build --html` and uploads the result as the
 | `source_ref` | triggering commit | Source branch, tag or commit to build. Ignored on pull requests, which always build the PR's head commit. |
 | `path_to_docs` | `<repo name>/docs/source` | Docs folder, relative to the workspace. The repository is checked out into a folder named after it. |
 | `package_path` | `<repo name>` | What to `pip install`, extras allowed (`flock[docs]`). |
-| `python_version` | `3.12` | Python for the build. |
+| `python_version` | `3.14` | Python for the build. |
 | `not_python_module` | `false` | Skip installing the package and autodoc. |
 | `mock_deps` | empty | Modules to mock during autodoc. |
 | `version_tag_suffix` | `src/` | Path after the commit in source links (`…/blob/<sha>/src/…`). Set it to `""` when the package sits at the repository root. |

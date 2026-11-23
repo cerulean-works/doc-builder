@@ -18,7 +18,7 @@ jobs:
         with:
           version: "0.13.1"
       - name: Install dependencies
-        run: uv sync --python 3.12 --extra testing
+        run: uv sync --python 3.14 --extra testing
       - name: Run tests
         run: uv run pytest tests/
 
@@ -45,7 +45,7 @@ jobs:
         with:
           version: "0.13.1"
       - name: Install dependencies
-        run: uv sync --python 3.12
+        run: uv sync --python 3.14
       - name: Build docs/source end to end
         run: uv run --with pytest pytest tests/test_e2e.py -m e2e
 

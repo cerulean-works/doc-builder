@@ -18,7 +18,7 @@ jobs:
       with:
         version: "0.13.1"
     - name: Install dependencies
-      run: uv sync --python 3.12 --extra quality
+      run: uv sync --python 3.14 --extra quality
     - name: Run ruff linting
       run: uv run ruff check . --output-format=github
     - name: Run ruff formatting check
