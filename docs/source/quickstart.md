@@ -4,7 +4,7 @@ This page walks through adding docs to a project and previewing them on your mac
 
 ## Install
 
-You need Python 3.10 or newer, Node.js 20 or newer and [pnpm](https://pnpm.io/installation). Node and pnpm are needed for previews and HTML builds. Without pnpm installed, doc-builder runs it through Node's built-in `corepack`, which is included up to Node.js 24.
+You need Python 3.14 or newer, Node.js 20 or newer and [pnpm](https://pnpm.io/installation). Node and pnpm are needed for previews and HTML builds. Without pnpm installed, doc-builder runs it through Node's built-in `corepack`, which is included up to Node.js 24.
 
 ```bash
 pip install git+https://github.com/cerulean-works/doc-builder

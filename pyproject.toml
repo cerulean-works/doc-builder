@@ -4,7 +4,7 @@ name = "cerulean-doc-builder"
 version = "0.1.0"
 description = "Builds static documentation sites from Markdown docs and Python docstrings"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.14"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 authors = [
@@ -16,10 +16,7 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
     "tqdm",
@@ -73,7 +70,7 @@ doctest_optionflags = "NUMBER NORMALIZE_WHITESPACE ELLIPSIS"
 
 [tool.ruff]
 line-length = 119
-target-version = "py310"
+target-version = "py314"
 extend-exclude = [
     "__pycache__",
     ".git",
